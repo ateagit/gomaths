@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap');
+
+.wrapper {
+    background-color: #1B1F3B;
+    width: 600px;
+    border-radius: 15px;
+    color: white;
+    padding: 3rem;
+    text-align: center;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    
+}
+
+@media only screen and (max-width: 720px) {
+    .wrapper {
+      max-width: 100%;
+    }
+}

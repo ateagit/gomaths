@@ -88,17 +88,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 
-.modalContent {
-    min-width: 40%;
-    max-width: 400px;
-    height: auto;
-    background-color: #1B1F3B;
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    font-family: 'Lato', sans-serif;
-
-}
 
 .modalHeading {
     color: #454ADE;
@@ -116,34 +105,3 @@ input[type=number]::-webkit-outer-spin-button {
     margin-left: auto;
 }
 
-.playAgainBtn {
-    display: block;
-    width: 100%;
-    margin: 20px auto 0px auto;
-    padding: 15px;
-    border-radius: 7px;
-    border: 0;
-    background-color: #454ADE;
-    color: white;
-    font-size: 1.2em;
-    font-weight: bold;
-    font-family: inherit;
-    cursor: pointer;
-    transition: 0.2s ease background-color;
-}
-
-.playAgainBtn:hover {
-    background-color: #3c40be;
-
-}
-
-@keyframes scale {
-    from {transform: scale(0.8);}
-    to {transform: scale(1);}
-}
-
-@media only screen and (max-width: 720px) {
-    .modalContent {
-        min-width: 80%
-    }
-}

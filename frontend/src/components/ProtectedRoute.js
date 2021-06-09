@@ -3,13 +3,15 @@ import { Redirect, Route } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
 
 export default function ProtectedRoute({ children, ...rest }) {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
 
     return (
         <Route
             {...rest}
             render={(props) =>
-                user ? (
+                loading ? (
+                    <p>Loading...</p>
+                ) : user ? (
                     children
                 ) : (
                     <Redirect

@@ -5,6 +5,9 @@ import styles from "./Play.module.css";
 import { useSocket } from "../../contexts/Socket";
 import ReactModal from "react-modal";
 import useGameState from "../../hooks/useGameState";
+import ContentBox from "../../components/ContentBox/ContentBox";
+import Button from "../../components/Button/Button";
+import { useAuth } from "../../contexts/Auth";
 
 const renderCustomAxisTick = ({ x, y, payload }) => {
     return (
@@ -45,6 +48,8 @@ export default function Play({ playerName }) {
     const [{ question, stage, scores, players, timer }, dispatch] =
         useGameState();
 
+    const { user } = useAuth();
+
     const graphScores = Object.entries(scores).map(([player, val]) => ({
         player,
         score: val.score,
@@ -59,6 +64,12 @@ export default function Play({ playerName }) {
             dispatch({ type: "decrement-timer" });
         }, 1000);
 
+        return () => {
+            clearInterval(i);
+        };
+    }, [dispatch]);
+
+    useEffect(() => {
         socket.on("lobby:newPlayer", ({ player }) => {
             dispatch({ type: "add-player", player });
         });
@@ -77,24 +88,28 @@ export default function Play({ playerName }) {
         });
 
         socket.on("game:end", ({ scores }) => {
-            console.log(scores);
             dispatch({ type: "update-scores", scores });
-
             dispatch({ type: "game-end" });
         });
 
-        return () => clearInterval(i);
-    }, [socket]);
+        return () => {
+            socket.removeAllListeners("lobby:newPlayer");
+            socket.removeAllListeners("game:countdown");
+            socket.removeAllListeners("game:start");
+            socket.removeAllListeners("game:scores");
+            socket.removeAllListeners("game:end");
+        };
+    }, [socket, dispatch]);
 
     useEffect(() => {
         if (stage === "LOBBY") {
             socket.emit(
                 "lobby:join",
-                { level: 1, name: "yoyo" },
+                { level: 1, name: user.displayName },
                 ({ lobby }) => {}
             );
         }
-    }, [stage]);
+    }, [stage, socket, user]);
 
     useEffect(() => {
         const input = answerInputRef.current;
@@ -187,8 +202,8 @@ export default function Play({ playerName }) {
                 className={styles.modalWrapper}
                 overlayClassName={styles.modalOverlay}
             >
-                <div className={styles.modalContent}>
-                    <h1 className={styles.modalHeading}>Scoreboard</h1>
+                <ContentBox>
+                    <h1 className={styles.modalHeading}>Scoreboard 🎉</h1>
                     {graphScores
                         ?.sort((a, b) => b.score - a.score)
                         .map((s, idx) => (
@@ -197,13 +212,10 @@ export default function Play({ playerName }) {
                                 <span>{s.score} points </span>
                             </p>
                         ))}
-                    <button
-                        className={styles.playAgainBtn}
-                        onClick={() => dispatch({ type: "reset" })}
-                    >
+                    <Button onClick={() => dispatch({ type: "reset" })}>
                         Play again!
-                    </button>
-                </div>
+                    </Button>
+                </ContentBox>
             </ReactModal>
         </div>
     );

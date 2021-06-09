@@ -22,6 +22,13 @@ export function useAuth() {
 
 export default function AuthProvider({ children }) {
     const [user, setUser] = useState();
+    const [loading, setLoading] = useState(true);
+
+    function setDisplayName(name) {
+        return firebase.auth().currentUser.updateProfile({
+            displayName: name,
+        });
+    }
 
     function signUp(email, password) {
         return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -41,6 +48,7 @@ export default function AuthProvider({ children }) {
 
     useEffect(() => {
         const unsub = firebase.auth().onAuthStateChanged((user) => {
+            console.log(user);
             if (user) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
@@ -49,6 +57,7 @@ export default function AuthProvider({ children }) {
                 // User is signed out
                 setUser(undefined);
             }
+            setLoading(false);
         });
 
         return () => unsub();
@@ -56,7 +65,15 @@ export default function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider
-            value={{ user, signIn, signUp, signOut, getToken }}
+            value={{
+                user,
+                signIn,
+                signUp,
+                signOut,
+                getToken,
+                loading,
+                setDisplayName,
+            }}
         >
             {children}
         </AuthContext.Provider>
