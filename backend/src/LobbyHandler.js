@@ -33,7 +33,7 @@ export default function registerLobbyHandler(io, socket) {
         startGame(io, socket, lobby);
     }
 
-    function handleLobbyJoin({ level, name }, cb) {
+    function handleLobbyJoin({ level }, cb) {
         // check if lobby for level exists
         let openLobby = lobbies[level].find((l) => l.status === "OPEN");
         // if it dosent create a lobby
@@ -48,18 +48,17 @@ export default function registerLobbyHandler(io, socket) {
             lobbies[level].push(openLobby);
         }
 
-        openLobby.players.push(name);
+        openLobby.players.push(socket.player);
 
         io.in(openLobby.lobbyId).emit("lobby:newPlayer", {
             // players: lobby.players,
-            player: name,
+            player: socket.player,
         });
 
         socket.lobbyId = openLobby.lobbyId;
-        socket.player = name;
 
         if (openLobby.players.length >= openLobby.maxPlayers) {
-            status = "CLOSED";
+            openLobby.status = "CLOSED";
         }
 
         const lobbyWaitTime = 5000;

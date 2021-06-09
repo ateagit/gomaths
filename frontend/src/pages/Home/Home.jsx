@@ -8,6 +8,7 @@ import { useTransition, animated } from "@react-spring/web";
 import { config } from "@react-spring/web";
 import { io } from "socket.io-client";
 import { useSocket } from "../../contexts/Socket";
+import { useAuth } from "../../contexts/Auth";
 
 const levels = [
     {
@@ -39,6 +40,7 @@ export default function LevelsCarousel({ setPlayerName }) {
     const popperRef = useRef();
     const avatarBtnRef = useRef();
     const [open, setOpen] = useState(false);
+    const { user } = useAuth();
     let history = useHistory();
 
     const transitions = useTransition(open, {
@@ -100,11 +102,13 @@ export default function LevelsCarousel({ setPlayerName }) {
         socket.emit("lobby:join", { level, name }, ({ lobby }) => {});
     }
 
+    console.log(user);
     // Bind it to a component
     return (
         <div className={styles.wrapper}>
             <h1 className={styles.appName}>GO Maths</h1>
             <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+                <h1>Welcome {user.displayName || user.email}</h1>
                 <h1 className={styles.formHeading}>
                     To get started, please choose an avatar, enter your name and
                     a maths level
@@ -154,7 +158,7 @@ export default function LevelsCarousel({ setPlayerName }) {
                         })}
                     </div>
                 </div>
-                <input
+                {/* <input
                     className={styles.name}
                     type="text"
                     {...register("name", { required: true, maxLength: 20 })}
@@ -164,7 +168,7 @@ export default function LevelsCarousel({ setPlayerName }) {
                     <span className={styles.error}>
                         The name is required and must be less than 20 characters
                     </span>
-                )}
+                )} */}
 
                 <div className={styles.levelBox} ref={levelsRef} {...bind()}>
                     {levels.map((l) => (

@@ -1,4 +1,5 @@
 import { evaluate } from "mathjs";
+import User from "./Models/User";
 
 const gameStates = {};
 
@@ -84,6 +85,27 @@ export function startGame(io, socket, lobby) {
             io.to(lobby.lobbyId).emit("game:end", {
                 scores: gameStates[lobby.lobbyId].scores,
             });
+
+            Object.entries(gameStates[lobby.lobbyId].scores).forEach(
+                async ([id, val]) => {
+                    if (!id.includes("BOT")) {
+                        const user = await User.findByPk(Number.parseInt(id));
+                        if (user) {
+                            console.log(id, val.score, user.totalPoints);
+                            User.update(
+                                {
+                                    totalPoints:
+                                        Number.parseInt(user.totalPoints) +
+                                        val.score,
+                                },
+                                {
+                                    where: { id: user.id },
+                                }
+                            );
+                        }
+                    }
+                }
+            );
         }, 20000);
     }, initialCountdown);
 }
@@ -122,6 +144,7 @@ function getQuestion(lobbyId, questionNum) {
 export default function registerGameHandler(io, socket) {
     socket.on("game:answer", ({ answer }, cb) => {
         const { player: playerName, lobbyId } = socket;
+        console.log(playerName);
 
         const questionNum = getScore(lobbyId, playerName);
         const correctAnswer = getAnswer(lobbyId, questionNum);
