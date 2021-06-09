@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap');
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    font-family: 'Lato', sans-serif;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: #0d0e1f;
+    color: white;
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 0px 10px 0px;
+}
+
+.logo {
+    padding-left: 10px;
+    font-weight: bold;
+    color: #454ADE;
+}
+
+.timer {
+    justify-self: center;
+}
+
+.qa {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.question {
+    font-size: 10vw;
+}
+
+.answer {
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    font-size: 10vw;
+    min-width: 0;
+    width: 1.5em;
+    height: 1.5em;    
+    border-radius: 15px;
+    appearance: textfield;
+    background-color: #00000023;
+    border: 1px solid white;
+    margin-left: 30px;
+    color: white;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+@media only screen and (max-width: 720px) {
+    .question, .answer {
+        font-size: 15vw;
+    }
+    
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.404);
+    transition: 0.2s ease background-color;
+}
+
+.modalWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    outline: none;
+    animation: scale 0.2s ease 0s;
+}
+
+
+.modalContent {
+    min-width: 40%;
+    max-width: 400px;
+    height: auto;
+    background-color: #1B1F3B;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    font-family: 'Lato', sans-serif;
+
+}
+
+.modalHeading {
+    color: #454ADE;
+    font-size: 2.5rem;
+    margin-top: 0;
+}
+
+.scoreSummary {
+    font-size: 1.2rem;
+    display: flex;
+    font-weight: bold;
+}
+
+.scoreSummary > span {
+    margin-left: auto;
+}
+
+.playAgainBtn {
+    display: block;
+    width: 100%;
+    margin: 20px auto 0px auto;
+    padding: 15px;
+    border-radius: 7px;
+    border: 0;
+    background-color: #454ADE;
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.2s ease background-color;
+}
+
+.playAgainBtn:hover {
+    background-color: #3c40be;
+
+}
+
+@keyframes scale {
+    from {transform: scale(0.8);}
+    to {transform: scale(1);}
+}
+
+@media only screen and (max-width: 720px) {
+    .modalContent {
+        min-width: 80%
+    }
+}
