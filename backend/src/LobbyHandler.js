@@ -41,6 +41,7 @@ export default function registerLobbyHandler(io, socket) {
             openLobby = {
                 lobbyId: uuid(),
                 status: "OPEN",
+                level,
                 players: [],
                 maxPlayers: 4,
                 timeout: false,

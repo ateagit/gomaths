@@ -99,9 +99,7 @@ export default function LevelsCarousel({ setPlayerName }) {
     }, [open]);
 
     function onSubmit({ level, avatar, name }) {
-        history.push("/play");
-
-        socket.emit("lobby:join", { level, name }, ({ lobby }) => {});
+        history.push(`/play/${level}`);
     }
 
     console.log(user);

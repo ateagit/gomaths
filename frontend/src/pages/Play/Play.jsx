@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styles from "./Play.module.css";
 import { useSocket } from "../../contexts/Socket";
 import ReactModal from "react-modal";
@@ -49,6 +49,7 @@ export default function Play({ playerName }) {
         useGameState();
 
     const { user } = useAuth();
+    const { level } = useParams();
 
     const graphScores = Object.entries(scores).map(([player, val]) => ({
         player,
@@ -103,13 +104,14 @@ export default function Play({ playerName }) {
 
     useEffect(() => {
         if (stage === "LOBBY") {
+            console.log(level);
             socket.emit(
                 "lobby:join",
-                { level: 1, name: user.displayName },
+                { level: Number.parseInt(level), name: user.displayName },
                 ({ lobby }) => {}
             );
         }
-    }, [stage, socket, user]);
+    }, [stage]);
 
     useEffect(() => {
         const input = answerInputRef.current;

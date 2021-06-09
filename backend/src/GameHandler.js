@@ -8,45 +8,57 @@ function randInt(min, max) {
 }
 
 function generateQuestion(level) {
+    level = JSON.parse(level);
     const operators = ["+", "-", "*"];
+    const prettyOperators = ["+", "-", "×"];
 
     let a;
     let b;
     let operator;
+    let prettyOperator;
 
     switch (level) {
         case 1:
             a = randInt(1, 10);
             b = randInt(1, 10);
             operator = "+";
+            prettyOperator = "+";
             break;
 
         case 2:
             a = randInt(1, 99);
             b = randInt(1, 99);
             operator = "+";
+            prettyOperator = "+";
+
             break;
 
         case 3:
             a = randInt(1, 99);
             b = randInt(1, 99);
             operator = "-";
+            prettyOperator = "-";
+
             break;
 
         case 4:
             a = randInt(1, 12);
             b = randInt(1, 12);
             operator = "*";
+            prettyOperator = "×";
+
             break;
 
         case 5:
             a = randInt(1, 12);
             b = randInt(1, 12);
-            operator = operators[randInt(0, operators.length - 1)];
+            const randOpIdx = randInt(0, operators.length - 1);
+            operator = operators[randOpIdx];
+            prettyOperator = prettyOperators[randOpIdx];
             break;
     }
 
-    const question = `${a} ${operator} ${b}`;
+    const question = `${a} ${prettyOperator} ${b} =`;
     const answer = evaluate(`${a} ${operator} ${b}`);
 
     return { question, answer };
@@ -68,7 +80,8 @@ export function startGame(io, socket, lobby) {
     );
 
     gameStates[[lobby.lobbyId]] = {
-        qa: [generateQuestion(1)],
+        level: lobby.level,
+        qa: [generateQuestion(lobby.level)],
         scores,
     };
 
@@ -91,7 +104,6 @@ export function startGame(io, socket, lobby) {
                     if (!id.includes("BOT")) {
                         const user = await User.findByPk(Number.parseInt(id));
                         if (user) {
-                            console.log(id, val.score, user.totalPoints);
                             User.update(
                                 {
                                     totalPoints:
@@ -136,7 +148,9 @@ function getAnswer(lobbyId, questionNum) {
 // get question, if it dosent exist generate one.
 function getQuestion(lobbyId, questionNum) {
     if (!gameStates[lobbyId].qa[questionNum]) {
-        gameStates[lobbyId].qa.push(generateQuestion(5));
+        gameStates[lobbyId].qa.push(
+            generateQuestion(gameStates[lobbyId].level)
+        );
     }
     return gameStates[lobbyId].qa[questionNum].question;
 }
@@ -144,7 +158,9 @@ function getQuestion(lobbyId, questionNum) {
 export default function registerGameHandler(io, socket) {
     socket.on("game:answer", ({ answer }, cb) => {
         const { player: playerName, lobbyId } = socket;
-        console.log(playerName);
+        if (!lobbyId || !playerName) {
+            return;
+        }
 
         const questionNum = getScore(lobbyId, playerName);
         const correctAnswer = getAnswer(lobbyId, questionNum);

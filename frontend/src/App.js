@@ -17,7 +17,7 @@ function App() {
             <SocketProvider>
                 <Router>
                     <Switch>
-                        <ProtectedRoute path="/play">
+                        <ProtectedRoute path="/play/:level">
                             <Play playerName={playerName} />
                         </ProtectedRoute>
                         <Route path="/login">
