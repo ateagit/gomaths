@@ -105,14 +105,14 @@ export default function LevelsCarousel({ setPlayerName }) {
     function onSubmit({ level, avatar, name }) {
         setAvatar(avatar);
 
-        socket.emit(
-            "lobby:join",
-            {
-                level: Number.parseInt(level),
-                avatar,
-            },
-            ({ lobby }) => {}
-        );
+        // socket.emit(
+        //     "lobby:join",
+        //     {
+        //         level: Number.parseInt(level),
+        //         avatar,
+        //     },
+        //     ({ lobby }) => {}
+        // );
 
         history.push(`/play/${level}`);
     }

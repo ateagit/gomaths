@@ -63,9 +63,6 @@ export default function Play({ playerName }) {
         player,
         score: val.score,
     }));
-    console.log(players);
-
-    console.log(graphScores);
 
     const socket = useSocket();
 
@@ -113,19 +110,23 @@ export default function Play({ playerName }) {
         };
     }, [socket, dispatch]);
 
-    const firstRender = useRef(true);
+    // const firstRender = useRef(true);
 
     // run every time stage changes... e.g. a game runs
     useEffect(() => {
-        if (firstRender.current) {
-            dispatch({ type: "add-player", player: { id: userId, avatar } });
+        // if (firstRender.current) {
+        //     dispatch({ type: "add-player", player: { id: userId, avatar } });
 
-            // this would of been fired from home page...
-            // TODO change so you dont need this.
-            firstRender.current = false;
-            return;
-        }
-        if (stage === "LOBBY") {
+        //     // this would of been fired from home page...
+        //     // TODO change so you dont need this.
+        //     firstRender.current = false;
+        //     return;
+        // }
+
+        console.log(avatar);
+        if (stage === "LOBBY" && avatar) {
+            // dispatch({ type: "add-player", player: { id: userId, avatar } });
+
             socket.emit(
                 "lobby:join",
                 {
@@ -133,10 +134,18 @@ export default function Play({ playerName }) {
                     name: user.displayName,
                     avatar,
                 },
-                ({ lobby }) => {}
+                ({ lobby }) => {
+                    console.log(lobby);
+                    lobby.players.forEach((p) =>
+                        dispatch({
+                            type: "add-player",
+                            player: { id: p.player, avatar: p.avatar },
+                        })
+                    );
+                }
             );
         }
-    }, [stage]);
+    }, [stage, avatar]);
 
     useEffect(() => {
         const input = answerInputRef.current;

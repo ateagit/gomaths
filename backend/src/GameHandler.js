@@ -75,7 +75,7 @@ export function startGame(io, socket, lobby) {
 
     lobby.players.forEach(
         (p) =>
-            (scores[[p]] = {
+            (scores[[p.player]] = {
                 score: 0,
             })
     );

@@ -21,7 +21,7 @@ export default function registerLobbyHandler(io, socket) {
         let botCount = 1;
         while (lobby.players.length < lobby.maxPlayers) {
             const botName = `BOT ${botCount}`;
-            lobby.players.push(`BOT ${botCount}`);
+            lobby.players.push({ player: `BOT ${botCount}`, avatar: "🤖" });
             botCount++;
             io.in(lobby.lobbyId).emit("lobby:newPlayer", {
                 // players: lobby.players,
@@ -55,7 +55,7 @@ export default function registerLobbyHandler(io, socket) {
         user.avatar = avatar;
         await user.save();
 
-        openLobby.players.push(socket.player);
+        openLobby.players.push({ player: socket.player, avatar });
 
         io.in(openLobby.lobbyId).emit("lobby:newPlayer", {
             // players: lobby.players,
@@ -80,6 +80,7 @@ export default function registerLobbyHandler(io, socket) {
 
         // socket subscribes to lobby events
         socket.join(openLobby.lobbyId);
+
         cb({ lobby: openLobby });
     }
 

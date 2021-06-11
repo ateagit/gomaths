@@ -66,8 +66,6 @@ io.use((socket, next) => {
 
             socket.player = user.id;
 
-            console.log("palyer", socket.player);
-
             next();
         })
         .catch((err) => console.error(err));
