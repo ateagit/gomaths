@@ -94,7 +94,23 @@ export function startGame(io, socket, lobby) {
             lobbyId: lobby.lobbyId,
         });
 
+        const botNames = Object.keys(gameStates[lobby.lobbyId].scores).filter(
+            (n) => n.includes("BOT")
+        );
+
+        const botIntervals = botNames.map((n) => {
+            return setInterval(() => {
+                if (Math.random() > 0.5) {
+                    incrementScore(lobby.lobbyId, n);
+                    io.to(lobby.lobbyId).emit("game:scores", {
+                        scores: gameStates[lobby.lobbyId].scores,
+                    });
+                }
+            }, lobby.level * 1000);
+        });
+
         setTimeout(() => {
+            botIntervals.forEach((t) => clearInterval(t));
             console.log("ending..");
             io.to(lobby.lobbyId).emit("game:end", {
                 scores: gameStates[lobby.lobbyId].scores,

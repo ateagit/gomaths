@@ -63,6 +63,9 @@ export default function Play({ playerName }) {
         player,
         score: val.score,
     }));
+    console.log(players);
+
+    console.log(graphScores);
 
     const socket = useSocket();
 

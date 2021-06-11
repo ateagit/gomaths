@@ -50,6 +50,7 @@ io.use((socket, next) => {
         .auth()
         .verifyIdToken(token)
         .then(async (u) => {
+            console.log(u);
             // use user.uid to retrieve db id and attach to socket
 
             const [user, created] = await User.findOrCreate({
@@ -57,13 +58,15 @@ io.use((socket, next) => {
                     uid: u.uid,
                 },
                 defaults: {
-                    uid: u.uid,
+                    // uid: u.uid,
                     email: u.email,
                     totalPoints: 0,
                 },
             });
 
             socket.player = user.id;
+
+            console.log("palyer", socket.player);
 
             next();
         })

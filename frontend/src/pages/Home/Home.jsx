@@ -126,7 +126,7 @@ export default function LevelsCarousel({ setPlayerName }) {
                     className={styles.leaderboardsBtn}
                     onClick={() => setModalOpen(true)}
                 >
-                    View Leaderboards
+                    View Leaderboards 🥳
                 </Button>
                 <ContentBox>
                     <form
