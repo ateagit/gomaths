@@ -9,30 +9,33 @@ import SignUp from "./pages/SignUp/SignUp";
 
 import AuthProvider from "./contexts/Auth";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UserProvider from "./contexts/User";
 
 function App() {
     const [playerName, setPlayerName] = useState();
     return (
-        <AuthProvider>
-            <SocketProvider>
-                <Router>
-                    <Switch>
-                        <ProtectedRoute path="/play/:level">
-                            <Play playerName={playerName} />
-                        </ProtectedRoute>
-                        <Route path="/login">
-                            <Login />
-                        </Route>
-                        <Route path="/signup">
-                            <SignUp />
-                        </Route>
-                        <ProtectedRoute path="/">
-                            <Home setPlayerName={setPlayerName} />
-                        </ProtectedRoute>
-                    </Switch>
-                </Router>
-            </SocketProvider>
-        </AuthProvider>
+        <UserProvider>
+            <AuthProvider>
+                <SocketProvider>
+                    <Router>
+                        <Switch>
+                            <ProtectedRoute path="/play/:level">
+                                <Play playerName={playerName} />
+                            </ProtectedRoute>
+                            <Route path="/login">
+                                <Login />
+                            </Route>
+                            <Route path="/signup">
+                                <SignUp />
+                            </Route>
+                            <ProtectedRoute path="/">
+                                <Home setPlayerName={setPlayerName} />
+                            </ProtectedRoute>
+                        </Switch>
+                    </Router>
+                </SocketProvider>
+            </AuthProvider>
+        </UserProvider>
     );
 }
 

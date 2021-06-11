@@ -9,6 +9,7 @@ import ContentBox from "../../components/ContentBox/ContentBox";
 import Button from "../../components/Button/Button";
 import { useAuth } from "../../contexts/Auth";
 import Modal from "../../components/Modal/Modal";
+import { useUser } from "../../contexts/User";
 
 const renderCustomAxisTick = ({ x, y, payload }) => {
     return (
@@ -25,7 +26,7 @@ const renderCustomAxisTick = ({ x, y, payload }) => {
             <circle cx="53" cy="53" r="53" fill="#454ADE" />
             <circle cx="52.5" cy="53.5" r="37.5" fill="white" />
             <foreignObject className={styles.avatarWrapper}>
-                <p className={styles.avatar}>😻</p>
+                <p className={styles.avatar}>{payload.value}</p>
             </foreignObject>
             {/* <path d="M19 89.76H87V21.76H19V89.76Z" fill="url(#pattern0)" />
             <defs>
@@ -53,10 +54,12 @@ export default function Play({ playerName }) {
         useGameState();
 
     const { user } = useAuth();
+    const { avatar, name, userId } = useUser();
     const { level } = useParams();
     const history = useHistory();
 
     const graphScores = Object.entries(scores).map(([player, val]) => ({
+        avatar: players.find((p) => p.id == player)?.avatar,
         player,
         score: val.score,
     }));
@@ -76,8 +79,8 @@ export default function Play({ playerName }) {
     }, [dispatch]);
 
     useEffect(() => {
-        socket.on("lobby:newPlayer", ({ player }) => {
-            dispatch({ type: "add-player", player });
+        socket.on("lobby:newPlayer", ({ player: id, avatar }) => {
+            dispatch({ type: "add-player", player: { id, avatar } });
         });
 
         socket.on("game:countdown", ({ cd }) => {
@@ -107,12 +110,26 @@ export default function Play({ playerName }) {
         };
     }, [socket, dispatch]);
 
+    const firstRender = useRef(true);
+
+    // run every time stage changes... e.g. a game runs
     useEffect(() => {
+        if (firstRender.current) {
+            dispatch({ type: "add-player", player: { id: userId, avatar } });
+
+            // this would of been fired from home page...
+            // TODO change so you dont need this.
+            firstRender.current = false;
+            return;
+        }
         if (stage === "LOBBY") {
-            console.log(level);
             socket.emit(
                 "lobby:join",
-                { level: Number.parseInt(level), name: user.displayName },
+                {
+                    level: Number.parseInt(level),
+                    name: user.displayName,
+                    avatar,
+                },
                 ({ lobby }) => {}
             );
         }

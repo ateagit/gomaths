@@ -20,7 +20,7 @@ function reducer(state, action) {
                 players: state.players.concat(action.player),
                 scores: {
                     ...state.scores,
-                    [action.player]: 0,
+                    [action.player.id]: 0,
                 },
             };
         case "remove-player": {
@@ -28,7 +28,7 @@ function reducer(state, action) {
                 state.scores;
             return {
                 ...state,
-                players: state.players.filter((p) => p !== action.player),
+                players: state.players.filter((p) => p.id !== action.player),
                 scores: filteredScores,
             };
         }

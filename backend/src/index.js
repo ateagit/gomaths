@@ -73,6 +73,11 @@ io.use((socket, next) => {
 function handleConnection(socket) {
     registerLobbyHandler(io, socket);
     registerGameHandler(io, socket);
+
+    socket.on("get-user-id", async ({ uid }, cb) => {
+        const user = await User.findOne({ uid });
+        cb({ id: user.id });
+    });
 }
 // event handler for joining a game of a certain level.
 // if existing game, join

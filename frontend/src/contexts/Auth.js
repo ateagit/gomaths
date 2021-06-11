@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
+import { useUser } from "./User";
+import { useSocket } from "./Socket";
 
 const AuthContext = createContext();
 
@@ -22,7 +24,9 @@ export function useAuth() {
 
 export default function AuthProvider({ children }) {
     const [user, setUser] = useState();
+    const { setUserId, setName } = useUser();
     const [loading, setLoading] = useState(true);
+    const socket = useSocket();
 
     function setDisplayName(name) {
         return firebase.auth().currentUser.updateProfile({
@@ -53,6 +57,8 @@ export default function AuthProvider({ children }) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 setUser(user);
+
+                setName(user.displayName);
             } else {
                 // User is signed out
                 setUser(undefined);

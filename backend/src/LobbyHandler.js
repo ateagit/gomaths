@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { startGame } from "./GameHandler";
+import User from "./models/User";
 export const lobbies = {
     1: [],
     2: [],
@@ -25,6 +26,7 @@ export default function registerLobbyHandler(io, socket) {
             io.in(lobby.lobbyId).emit("lobby:newPlayer", {
                 // players: lobby.players,
                 player: botName,
+                avatar: "🤖",
             });
         }
 
@@ -33,7 +35,7 @@ export default function registerLobbyHandler(io, socket) {
         startGame(io, socket, lobby);
     }
 
-    function handleLobbyJoin({ level }, cb) {
+    async function handleLobbyJoin({ level, avatar }, cb) {
         // check if lobby for level exists
         let openLobby = lobbies[level].find((l) => l.status === "OPEN");
         // if it dosent create a lobby
@@ -49,11 +51,16 @@ export default function registerLobbyHandler(io, socket) {
             lobbies[level].push(openLobby);
         }
 
+        const user = await User.findByPk(socket.player);
+        user.avatar = avatar;
+        await user.save();
+
         openLobby.players.push(socket.player);
 
         io.in(openLobby.lobbyId).emit("lobby:newPlayer", {
             // players: lobby.players,
             player: socket.player,
+            avatar: user.avatar,
         });
 
         socket.lobbyId = openLobby.lobbyId;

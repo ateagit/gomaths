@@ -13,6 +13,7 @@ import Button from "../../components/Button/Button";
 import ContentBox from "../../components/ContentBox/ContentBox";
 import Modal from "../../components/Modal/Modal";
 import Leaderboard from "../../components/Leaderboard/Leaderboard";
+import { useUser } from "../../contexts/User";
 
 const levels = [
     {
@@ -44,7 +45,7 @@ export default function LevelsCarousel({ setPlayerName }) {
     const popperRef = useRef();
     const avatarBtnRef = useRef();
     const [open, setOpen] = useState(false);
-    const { user } = useAuth();
+    const { name, setAvatar } = useUser();
     let history = useHistory();
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -102,6 +103,17 @@ export default function LevelsCarousel({ setPlayerName }) {
     }, [open]);
 
     function onSubmit({ level, avatar, name }) {
+        setAvatar(avatar);
+
+        socket.emit(
+            "lobby:join",
+            {
+                level: Number.parseInt(level),
+                avatar,
+            },
+            ({ lobby }) => {}
+        );
+
         history.push(`/play/${level}`);
     }
 
@@ -122,7 +134,7 @@ export default function LevelsCarousel({ setPlayerName }) {
                         onSubmit={handleSubmit(onSubmit)}
                     >
                         <h1 className={styles.welcomeHeading}>
-                            Welcome {user.displayName || user.email}
+                            Welcome {name}
                         </h1>
                         <h1 className={styles.formHeading}>
                             To get started, please choose an avatar and a maths
