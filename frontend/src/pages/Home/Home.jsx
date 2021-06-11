@@ -11,6 +11,8 @@ import { useSocket } from "../../contexts/Socket";
 import { useAuth } from "../../contexts/Auth";
 import Button from "../../components/Button/Button";
 import ContentBox from "../../components/ContentBox/ContentBox";
+import Modal from "../../components/Modal/Modal";
+import Leaderboard from "../../components/Leaderboard/Leaderboard";
 
 const levels = [
     {
@@ -44,6 +46,7 @@ export default function LevelsCarousel({ setPlayerName }) {
     const [open, setOpen] = useState(false);
     const { user } = useAuth();
     let history = useHistory();
+    const [modalOpen, setModalOpen] = useState(false);
 
     const transitions = useTransition(open, {
         from: { opacity: 0 },
@@ -102,99 +105,116 @@ export default function LevelsCarousel({ setPlayerName }) {
         history.push(`/play/${level}`);
     }
 
-    console.log(user);
     // Bind it to a component
     return (
         <div className={styles.wrapper}>
             <h1 className={styles.appName}>GO Maths</h1>
-            <ContentBox>
-                <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-                    <h1 className={styles.welcomeHeading}>
-                        Welcome {user.displayName || user.email}
-                    </h1>
-                    <h1 className={styles.formHeading}>
-                        To get started, please choose an avatar and a maths
-                        level
-                    </h1>
-
-                    <div className={styles.avatarBox}>
-                        <div className={styles.relativeWrapper}>
-                            <div
-                                ref={avatarBtnRef}
-                                className={styles.avatar}
-                                onClick={() => setOpen(!open)}
-                            >
-                                {watchAvatar}
-                            </div>
-                            {/* {open && ( */}
-                            {transitions((springStyles, item) => {
-                                return (
-                                    item && (
-                                        <animated.div
-                                            ref={popperRef}
-                                            style={springStyles}
-                                            className={styles.chooseAvatar}
-                                        >
-                                            {avatars.map((a) => (
-                                                <Fragment key={a}>
-                                                    <label htmlFor={a}>
-                                                        <input
-                                                            id={a}
-                                                            className={
-                                                                styles.input
-                                                            }
-                                                            type="radio"
-                                                            {...register(
-                                                                "avatar"
-                                                            )}
-                                                            value={a}
-                                                        />
-                                                        <span
-                                                            className={
-                                                                styles.avatarIcon
-                                                            }
-                                                        >
-                                                            {a}
-                                                        </span>
-                                                    </label>
-                                                </Fragment>
-                                            ))}
-                                        </animated.div>
-                                    )
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    <div
-                        className={styles.levelBox}
-                        ref={levelsRef}
-                        {...bind()}
+            <div>
+                <Button
+                    className={styles.leaderboardsBtn}
+                    onClick={() => setModalOpen(true)}
+                >
+                    View Leaderboards
+                </Button>
+                <ContentBox>
+                    <form
+                        className={styles.form}
+                        onSubmit={handleSubmit(onSubmit)}
                     >
-                        {levels.map((l) => (
-                            <Fragment key={l.level}>
-                                <label
-                                    htmlFor={l.level}
-                                    className={styles.label}
-                                >
-                                    <input
-                                        className={styles.input}
-                                        type="radio"
-                                        {...register("level")}
-                                        id={l.level}
-                                        value={l.level}
-                                    />
-                                    <span className={styles.levelText}>
-                                        Level {l.level}: {l.name}
-                                    </span>
-                                </label>
-                            </Fragment>
-                        ))}
-                    </div>
+                        <h1 className={styles.welcomeHeading}>
+                            Welcome {user.displayName || user.email}
+                        </h1>
+                        <h1 className={styles.formHeading}>
+                            To get started, please choose an avatar and a maths
+                            level
+                        </h1>
 
-                    <Button>Start Game</Button>
-                </form>
-            </ContentBox>
+                        <div className={styles.avatarBox}>
+                            <div className={styles.relativeWrapper}>
+                                <div
+                                    ref={avatarBtnRef}
+                                    className={styles.avatar}
+                                    onClick={() => setOpen(!open)}
+                                >
+                                    {watchAvatar}
+                                </div>
+                                {/* {open && ( */}
+                                {transitions((springStyles, item) => {
+                                    return (
+                                        item && (
+                                            <animated.div
+                                                ref={popperRef}
+                                                style={springStyles}
+                                                className={styles.chooseAvatar}
+                                            >
+                                                {avatars.map((a) => (
+                                                    <Fragment key={a}>
+                                                        <label htmlFor={a}>
+                                                            <input
+                                                                id={a}
+                                                                className={
+                                                                    styles.input
+                                                                }
+                                                                type="radio"
+                                                                {...register(
+                                                                    "avatar"
+                                                                )}
+                                                                value={a}
+                                                            />
+                                                            <span
+                                                                className={
+                                                                    styles.avatarIcon
+                                                                }
+                                                            >
+                                                                {a}
+                                                            </span>
+                                                        </label>
+                                                    </Fragment>
+                                                ))}
+                                            </animated.div>
+                                        )
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div
+                            className={styles.levelBox}
+                            ref={levelsRef}
+                            {...bind()}
+                        >
+                            {levels.map((l) => (
+                                <Fragment key={l.level}>
+                                    <label
+                                        htmlFor={l.level}
+                                        className={styles.label}
+                                    >
+                                        <input
+                                            className={styles.input}
+                                            type="radio"
+                                            {...register("level")}
+                                            id={l.level}
+                                            value={l.level}
+                                        />
+                                        <span className={styles.levelText}>
+                                            Level {l.level}: {l.name}
+                                        </span>
+                                    </label>
+                                </Fragment>
+                            ))}
+                        </div>
+
+                        <Button>Start Game</Button>
+                    </form>
+                </ContentBox>
+
+                <Modal
+                    isOpen={modalOpen}
+                    closeModal={() => setModalOpen(false)}
+                >
+                    <Leaderboard />
+                </Modal>
+            </div>
         </div>
     );
 }

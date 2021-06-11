@@ -1,0 +1,35 @@
+
+.modalHeading {
+    margin: 0;
+}
+
+.timeCategories {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.leaderboardEntry {
+    display: flex;
+    padding: 10px;
+    border-radius: 7px;
+    margin: 10px 0;
+}
+
+.leaderboardEntry > span {
+    margin-left: auto;
+}
+
+.first{
+    background-color: #454ADE;
+    
+}
+
+.second {
+    background-color: #454ade7e;
+
+    
+}
+.third {
+    background-color: #454ade23;
+}

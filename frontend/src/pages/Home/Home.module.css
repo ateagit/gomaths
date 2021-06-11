@@ -11,10 +11,15 @@
 }
 
 .appName {
-    margin: 1vh 0 10px 0;
+    margin: 1vh 0 0px 0;
     font-size: 6rem;
     text-align: center;
     color: #454ADE;
+}
+
+.leaderboardsBtn {
+    width: 100%;
+    margin: 10px 0;
 }
 
 .formHeading {

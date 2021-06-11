@@ -1,13 +1,15 @@
 require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const app = express();
 import registerLobbyHandler from "./LobbyHandler";
-
 import { createServer } from "http";
 import { Server } from "socket.io";
 import registerGameHandler from "./GameHandler";
-
+import leaderboard from "./routes/Leaderboard";
 import { sequelize } from "./db";
-import User from "./Models/User";
-
+import User from "./models/User";
+import Activity from "./models/Activity";
 const admin = require("firebase-admin");
 
 const firebaseKey = JSON.parse(process.env.FIREBASE_KEY);
@@ -25,7 +27,9 @@ sequelize
     })
     .catch((e) => console.error(":(", e));
 
-const httpServer = createServer();
+app.use(cors());
+app.use("/leaderboard", leaderboard);
+const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
         origin: "*",

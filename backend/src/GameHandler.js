@@ -1,5 +1,6 @@
 import { evaluate } from "mathjs";
-import User from "./Models/User";
+import Activity from "./models/Activity";
+import User from "./models/User";
 
 const gameStates = {};
 
@@ -114,6 +115,10 @@ export function startGame(io, socket, lobby) {
                                     where: { id: user.id },
                                 }
                             );
+                            const activity = await Activity.create({
+                                points: Number.parseInt(val.score),
+                            });
+                            await user.addActivity(activity);
                         }
                     }
                 }

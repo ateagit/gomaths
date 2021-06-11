@@ -17,3 +17,13 @@
 .button:hover {
     background-color: #3c40be;
 }
+
+.secondary {
+    background-color: #de4572;
+
+}
+
+.secondary:hover {
+    background-color: #b93a60;
+
+}
